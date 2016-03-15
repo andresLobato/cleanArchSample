@@ -11,5 +11,5 @@ trait Presenter[C <: Callback[_]] extends Results {
 
   type Rendered = Result
 
-  def present(call: UseCaseExecutor)(implicit ec: ExecutionContext): Future[Rendered]
+  def response(call: UseCaseExecutor)(implicit ec: ExecutionContext): Future[Rendered]
 }

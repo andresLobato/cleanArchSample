@@ -21,7 +21,7 @@ class GroupController @Inject()(useCase: PickLeaderUseCase, presenter: PickedLea
 
   def pickLeader = Action.async { implicit request =>
     form.bindFromRequest.fold(_ => Future.successful(BadRequest("not found query parameter: `groupId`")), (groupId: GroupId) =>
-      presenter.present(useCase.execute(groupId))
+      presenter.response(useCase.execute(groupId))
     )
   }
 

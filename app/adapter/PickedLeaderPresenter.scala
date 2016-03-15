@@ -10,7 +10,7 @@ class PickedLeaderPresenter extends Presenter[PickedLeaderCallback] {
 
   implicit val writer = Json.writes[UserId]
 
-  override def present(call: UseCaseExecutor)(implicit ec: ExecutionContext): Future[Rendered] = {
+  override def response(call: UseCaseExecutor)(implicit ec: ExecutionContext): Future[Rendered] = {
     val callback = new CallbackImpl
     call(callback)
     callback.promise.future.map { userId =>
