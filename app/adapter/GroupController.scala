@@ -1,28 +1,28 @@
 package adapter
 
-import javax.inject.Inject
-
 import contract.usecase.PickLeaderUseCase
 import domain.GroupId
+import javax.inject.{Inject, Singleton}
 import play.api.data.Forms._
 import play.api.data._
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{AbstractController, ControllerComponents}
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
-class GroupController @Inject()(useCase: PickLeaderUseCase, presenter: PickedLeaderPresenter) extends Controller {
+@Singleton
+class GroupController @Inject()(useCase: PickLeaderUseCase, presenter: PickedLeaderPresenter, controllerComponents: ControllerComponents) extends AbstractController(controllerComponents) {
 
-  val form = Form(
+  private implicit lazy val ec: ExecutionContext = defaultExecutionContext
+
+  private val form = Form(
     mapping(
       "groupId" -> number
     )(GroupId.apply)(GroupId.unapply)
   )
 
-  def pickLeader = Action.async { implicit request =>
-    form.bindFromRequest.fold(_ => Future.successful(BadRequest("not found query parameter: `groupId`")), (groupId: GroupId) =>
-      presenter.response(useCase.execute(groupId))
-    )
+  def pickLeader = Action.async(parse.form(form)) { implicit request =>
+    val groupId = request.body
+    presenter.response(useCase.execute(groupId))
   }
 
 }

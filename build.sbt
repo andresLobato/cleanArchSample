@@ -3,7 +3,7 @@ name := "cleanArchSample"
 version := "1.0"
 
 lazy val scalacSettings = Seq(
-  scalaVersion := "2.11.7",
+  scalaVersion := "2.12.8",
   scalacOptions := Seq(
     "-feature",
     "-language:implicitConversions",
@@ -15,24 +15,11 @@ lazy val scalacSettings = Seq(
   )
 )
 
-lazy val playResolvers = Seq(
-  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
-)
-
 lazy val playDependencies = Seq(
-  jdbc,
-  cache,
-  ws,
-  specs2 % Test
-)
-
-lazy val playSettings = Seq(
-  routesGenerator := InjectedRoutesGenerator,
-  unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
+  guice,
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 )
 
 lazy val `cleanarchsample` = (project in file("."))
-  .settings(scalacSettings ++ playSettings: _*)
-  .settings(resolvers ++= playResolvers)
-  .settings(libraryDependencies ++= playDependencies)
   .enablePlugins(PlayScala)
+  .settings(libraryDependencies ++= playDependencies)
